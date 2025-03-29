@@ -1,0 +1,24 @@
+#!/bin/bash
+
+x=-5
+
+if [ -z $x ]; then
+	echo "INT is empty." >&2
+	exit 1
+fi
+
+if [ $x = 0 ]; then
+	echo "It is zero."
+	exit
+else
+	if [ $x -lt 0 ]; then
+		echo "It is a Negative."
+	else
+		echo "It is a positive."
+	fi
+	if [ $(($x % 2)) -eq 0 ]; then
+		echo "It is even."
+	else
+		echo "It is odd."
+	fi
+fi

@@ -1,0 +1,132 @@
+#!/bin/bash
+
+# Function to display header
+display_header() {
+  echo "==============================================="
+  echo "        FTP Learning Script - Bash Edition      "
+  echo "==============================================="
+  echo
+}
+
+# Function to pause until user presses Enter
+pause() {
+  read -p "Press Enter to continue..."
+}
+
+# Function to explain FTP basics
+learn_ftp_basics() {
+  display_header
+  echo "1. FTP (File Transfer Protocol) is used to transfer files from one host to another over a TCP-based network."
+  echo "2. It operates over two channels: a command (control) channel on port 21 and a data channel."
+  echo "3. FTP modes: Active and Passive."
+  echo "4. FTP sends data in plaintext, making it vulnerable to packet sniffing."
+  echo "5. SFTP (part of SSH) and FTPS (FTP with TLS/SSL) are secure alternatives."
+  pause
+}
+
+# Function to learn basic FTP commands
+learn_ftp_commands() {
+  display_header
+  echo "FTP Basic Commands:"
+  echo "1. \`ls\`: List files and directories on the remote server."
+  echo "2. \`get <filename>\`: Download a file from the server."
+  echo "3. \`put <filename>\`: Upload a file to the server."
+  echo "4. \`cd <directory>\`: Change the directory on the remote server."
+  echo "5. \`mget <files>\`: Download multiple files."
+  echo "6. \`mput <files>\`: Upload multiple files."
+  echo "7. \`bye\` or \`quit\`: Exit the FTP session."
+  pause
+}
+
+# Function to initiate FTP connection
+connect_to_ftp() {
+  echo
+  read -p "Enter FTP server address (example: ftp.dlptest.com): " ftp_server
+  read -p "Enter FTP username: " ftp_user
+  read -sp "Enter FTP password: " ftp_pass
+  echo
+  echo "Connecting to $ftp_server..."
+  
+  # Create a temporary FTP command file
+  ftp_commands=$(mktemp)
+  
+  # Write commands to log in to FTP server
+  echo "user $ftp_user $ftp_pass" > $ftp_commands
+  echo "prompt" >> $ftp_commands # To turn off interactive prompting for mget/mput
+  
+  # Start interactive FTP session
+  ftp -n -v $ftp_server < $ftp_commands
+  
+  rm $ftp_commands
+}
+
+# Function to guide through uploading and downloading files
+ftp_operations_tutorial() {
+  display_header
+  echo "Let's practice FTP operations on a server."
+
+  # Connect to FTP and run basic commands interactively
+  connect_to_ftp
+
+  echo "You're now connected! Try running the following commands in your FTP session:"
+  echo "1. \`ls\` - List files."
+  echo "2. \`get <filename>\` - Download a file."
+  echo "3. \`put <filename>\` - Upload a file."
+  echo "4. \`cd <directory>\` - Change directories."
+  echo "5. \`bye\` or \`quit\` - Exit the FTP session."
+  pause
+}
+
+# Function to explain secure FTP (SFTP and FTPS)
+learn_secure_ftp() {
+  display_header
+  echo "FTP transmits data in plain text, which can be easily intercepted."
+  echo "To improve security, you can use:"
+  echo "1. **SFTP**: Secure File Transfer Protocol, part of SSH (port 22)."
+  echo "2. **FTPS**: FTP over SSL/TLS (port 990)."
+  echo
+  echo "These protocols encrypt your data, protecting it from eavesdropping."
+  pause
+}
+
+# Function to explain FTP vulnerabilities
+learn_ftp_vulnerabilities() {
+  display_header
+  echo "Common FTP Vulnerabilities:"
+  echo "1. **Plaintext Transmission**: Credentials and data are sent in plain text, vulnerable to sniffing."
+  echo "2. **Anonymous FTP**: Some servers allow anonymous access, leading to potential unauthorized access."
+  echo "3. **Brute-force attacks**: Weak passwords make FTP accounts vulnerable."
+  echo
+  echo "Tools like **Wireshark** can capture FTP credentials if the connection is unencrypted."
+  echo "You can use tools like **Hydra** to attempt brute-forcing FTP credentials (on your own servers for testing!)."
+  pause
+}
+
+# Main menu
+main_menu() {
+  while true; do
+    display_header
+    echo "Choose a topic to learn:"
+    echo "1. FTP Basics"
+    echo "2. Basic FTP Commands"
+    echo "3. Practice FTP Operations (Connect to FTP)"
+    echo "4. Secure FTP (SFTP and FTPS)"
+    echo "5. FTP Vulnerabilities"
+    echo "6. Exit"
+    echo
+    read -p "Enter your choice [1-6]: " choice
+
+    case $choice in
+      1) learn_ftp_basics ;;
+      2) learn_ftp_commands ;;
+      3) ftp_operations_tutorial ;;
+      4) learn_secure_ftp ;;
+      5) learn_ftp_vulnerabilities ;;
+      6) echo "Goodbye!"; exit ;;
+      *) echo "Invalid choice! Please choose a valid option."; pause ;;
+    esac
+  done
+}
+
+# Run the main menu
+main_menu

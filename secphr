@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if read -t 10 -sp "Enter the passphrase > " secret; then
+	echo -e "\nsecret passphrase: $secret"
+else
+	echo -e "\nInput timed out" >&2
+	exit 1
+fi
